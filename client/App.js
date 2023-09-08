@@ -1,13 +1,21 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
 import { ThemeProvider } from "react-native-rapi-ui";
-import Login from "./src/screens/auth/Login";
-import Register from "./src/screens/auth/Register";
+import Navigation from "./src/navigation";
+import { AuthProvider } from "./src/provider/AuthProvider";
 
 export default function App() {
+  const images = [
+    require("./assets/images/login.png"),
+    require("./assets/images/register.png"),
+    require("./assets/images/forget.png"),
+  ];
   return (
-    <ThemeProvider theme="dark">
-      <Login />
+    <ThemeProvider images={images}>
+      <AuthProvider>
+        <Navigation />
+      </AuthProvider>
+      <StatusBar />
     </ThemeProvider>
   );
 }

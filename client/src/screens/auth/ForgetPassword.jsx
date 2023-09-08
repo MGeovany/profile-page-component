@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   TouchableOpacity,
@@ -19,26 +19,38 @@ import {
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-  console.log(process.env.EXPO_PUBLIC_SUPABASE_KEY, "URL");
-
-  async function login() {
+  async function forget() {
     setLoading(true);
-    const { user, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-    if (!error && !user) {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email);
+    if (!error) {
       setLoading(false);
+      alert("Check your email to reset your password!");
     }
     if (error) {
       setLoading(false);
       alert(error.message);
     }
   }
+
+  useEffect(() => {
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event == "PASSWORD_RECOVERY") {
+        const newPassword = prompt(
+          "What would you like your new password to be?"
+        );
+        const { data, error } = await supabase.auth.updateUser({
+          password: newPassword,
+        });
+
+        if (data) alert("Password updated successfully!");
+        if (error) alert("There was an error updating your password.");
+      }
+    });
+  }, []);
+
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
       <Layout>
@@ -61,7 +73,7 @@ export default function ({ navigation }) {
                 height: 220,
                 width: 220,
               }}
-              source={require("../../../assets/images/login.png")}
+              source={require("../../../assets/images/forget.png")}
             />
           </View>
           <View
@@ -73,14 +85,14 @@ export default function ({ navigation }) {
             }}
           >
             <Text
+              size="h3"
               fontWeight="bold"
               style={{
                 alignSelf: "center",
                 padding: 30,
               }}
-              size="h3"
             >
-              Login
+              Forget Password
             </Text>
             <Text>Email</Text>
             <TextInput
@@ -93,22 +105,10 @@ export default function ({ navigation }) {
               keyboardType="email-address"
               onChangeText={(text) => setEmail(text)}
             />
-
-            <Text style={{ marginTop: 15 }}>Password</Text>
-            <TextInput
-              containerStyle={{ marginTop: 15 }}
-              placeholder="Enter your password"
-              value={password}
-              autoCapitalize="none"
-              autoCompleteType="off"
-              autoCorrect={false}
-              secureTextEntry={true}
-              onChangeText={(text) => setPassword(text)}
-            />
             <Button
-              text={loading ? "Loading" : "Continue"}
+              text={loading ? "Loading" : "Send email"}
               onPress={() => {
-                login();
+                forget();
               }}
               style={{
                 marginTop: 20,
@@ -124,10 +124,10 @@ export default function ({ navigation }) {
                 justifyContent: "center",
               }}
             >
-              <Text size="md">Don't have an account?</Text>
+              <Text size="md">Already have an account?</Text>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("Register");
+                  navigation.navigate("Login");
                 }}
               >
                 <Text
@@ -137,25 +137,7 @@ export default function ({ navigation }) {
                     marginLeft: 5,
                   }}
                 >
-                  Register here
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: 10,
-                justifyContent: "center",
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("ForgetPassword");
-                }}
-              >
-                <Text size="md" fontWeight="bold">
-                  Forget password
+                  Login here
                 </Text>
               </TouchableOpacity>
             </View>
