@@ -1,20 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
+import { ThemeProvider } from "react-native-rapi-ui";
+import Login from "./src/screens/auth/Login";
+import Register from "./src/screens/auth/Register";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ThemeProvider theme="dark">
+      <Login />
+    </ThemeProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
