@@ -53,9 +53,9 @@ export default function ({ navigation }) {
               onPress={() => Linking.openURL("https://github.com/mgeovany")}
             />
             <Button
-              text="Go profile"
+              text="See contracts"
               onPress={() => {
-                navigation.navigate("SecondScreen");
+                navigation.navigate("ContractScreen");
               }}
               color="black"
               style={{
