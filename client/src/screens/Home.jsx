@@ -44,19 +44,20 @@ export default function ({ navigation }) {
         <Section style={{ marginTop: 20 }}>
           <SectionContent>
             <Text fontWeight="bold" style={{ textAlign: "center" }}>
-              These UI components provided by Rapi UI
+              This app is being developed by mgeovany
             </Text>
             <Button
-              style={{ marginTop: 10 }}
-              text="Rapi UI Documentation"
-              status="info"
-              onPress={() => Linking.openURL("https://rapi-ui.kikiding.space/")}
+              style={{ marginTop: 30 }}
+              text="github.com/mgeovany"
+              color="black"
+              onPress={() => Linking.openURL("https://github.com/mgeovany")}
             />
             <Button
-              text="Go to second screen"
+              text="Go profile"
               onPress={() => {
                 navigation.navigate("SecondScreen");
               }}
+              color="black"
               style={{
                 marginTop: 10,
               }}
@@ -74,7 +75,7 @@ export default function ({ navigation }) {
                 }
               }}
               style={{
-                marginTop: 10,
+                marginTop: 50,
               }}
             />
           </SectionContent>
