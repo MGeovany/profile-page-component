@@ -23,8 +23,6 @@ export default function ({ navigation }) {
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
 
-  console.log(process.env.EXPO_PUBLIC_SUPABASE_KEY, "URL");
-
   async function login() {
     setLoading(true);
     const { user, error } = await supabase.auth.signInWithPassword({
