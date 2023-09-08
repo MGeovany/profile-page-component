@@ -13,7 +13,7 @@ export default ({ icon, focused }) => {
         focused
           ? isDarkmode
             ? themeColor.white100
-            : themeColor.primary
+            : themeColor.dark100
           : "rgb(143, 155, 179)"
       }
     />
