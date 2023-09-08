@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Linking } from "react-native";
-import { supabase } from "../initSupabase";
+
 import {
   Layout,
   Button,
@@ -12,6 +12,7 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
+import { supabase } from "../lib/initSupabase";
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();

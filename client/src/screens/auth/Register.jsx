@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Image,
 } from "react-native";
-import { supabase } from "../../initSupabase";
 
 import {
   Layout,
@@ -17,6 +16,7 @@ import {
   useTheme,
   themeColor,
 } from "react-native-rapi-ui";
+import { supabase } from "../../lib/initSupabase";
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
