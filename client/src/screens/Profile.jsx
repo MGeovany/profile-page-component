@@ -16,7 +16,6 @@ import { getUser } from "../lib/profile";
 import Loading from "./utils/Loading";
 import { getFirmData } from "../lib/firm";
 import { updateUserData } from "../lib/updateProfile";
-import { supabase } from "../lib/initSupabase";
 
 export default function ({ navigation }) {
   const [user, setUser] = useState(null);
