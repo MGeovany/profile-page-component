@@ -20,7 +20,6 @@ import { getFirmData } from "../lib/firm";
 export default function ({ navigation }) {
   const [user, setUser] = useState(null);
   const [firm, setFirm] = useState(null);
-  const [email, setEmail] = useState(user?.email || "");
   const [loading, setLoading] = useState(true);
   const { isDarkmode } = useTheme();
 
