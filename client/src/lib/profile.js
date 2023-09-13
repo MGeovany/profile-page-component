@@ -1,10 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
-import { SUPABASE_KEY, SUPABASE_URL } from "./constants";
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
-  persistSession: true,
-  localStorage: window.localStorage,
-});
+import { supabase } from "./initSupabase";
 
 export const getUser = async () => {
   try {

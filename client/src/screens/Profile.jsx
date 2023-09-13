@@ -7,7 +7,6 @@ import {
   Section,
   SectionContent,
   TextInput,
-  useTheme,
   RadioButton,
   Picker,
   Button,
@@ -16,12 +15,13 @@ import { STATES } from "../config";
 import { getUser } from "../lib/profile";
 import Loading from "./utils/Loading";
 import { getFirmData } from "../lib/firm";
+import { updateUserData } from "../lib/updateProfile";
+import { supabase } from "../lib/initSupabase";
 
 export default function ({ navigation }) {
   const [user, setUser] = useState(null);
   const [firm, setFirm] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { isDarkmode } = useTheme();
 
   useEffect(() => {
     async function fetchData() {
@@ -50,8 +50,56 @@ export default function ({ navigation }) {
     fetchData();
   }, [navigation]);
 
-  const handleInputChange = (field, val) => {
-    setUser({ ...user, [field]: val });
+  const handleInputChange = (dataType, field, val) => {
+    if (dataType !== "firm") {
+      setUser({ ...user, [field]: val });
+    } else {
+      setFirm({ ...firm, [field]: val });
+    }
+  };
+
+  useEffect(() => {
+    console.log(firm, "im firm");
+    console.log(user, "im user");
+  }, [firm, user]);
+
+  const handleSubmitForm = async () => {
+    if (user && firm) {
+      try {
+        if (user.is_registered_with_sec === false) {
+          firm = {
+            firm_name: null,
+            firm_crd_number: null,
+            firm_state: null,
+          };
+        }
+        if (!user.is_individual) {
+          user.finra_number = null;
+          user.phone_number = null;
+        }
+
+        const updatedUser = await updateUserData(
+          user,
+          "user_profile",
+          user?.id,
+          "id"
+        );
+        const updatedFirm = await updateUserData(
+          firm,
+          "firm",
+          user?.id,
+          "user_id"
+        );
+
+        if (updatedUser && updatedFirm) {
+          console.log("✅ User updated:", updatedUser, updatedFirm);
+          alert("Data submitted successfully");
+        }
+      } catch (error) {
+        console.error("Error submitting data:", error);
+        alert("Error: " + error.message);
+      }
+    }
   };
 
   return (
@@ -147,7 +195,7 @@ export default function ({ navigation }) {
                             defaultValue={user?.full_name}
                             placeholder="Please enter your name"
                             onChangeText={(val) =>
-                              handleInputChange("full_name", val)
+                              handleInputChange("user", "full_name", val)
                             }
                             style={{
                               marginBottom: 10,
@@ -172,7 +220,11 @@ export default function ({ navigation }) {
                             style={{ marginRight: 10 }}
                             value={user?.is_registered_with_sec}
                             onValueChange={() =>
-                              handleInputChange("is_registered_with_sec", true)
+                              handleInputChange(
+                                "user",
+                                "is_registered_with_sec",
+                                true
+                              )
                             }
                             checkedColor={"#333"}
                           />
@@ -183,7 +235,11 @@ export default function ({ navigation }) {
                             style={{ marginLeft: 20, marginRight: 10 }}
                             value={!user?.is_registered_with_sec}
                             onValueChange={() =>
-                              handleInputChange("is_registered_with_sec", false)
+                              handleInputChange(
+                                "user",
+                                "is_registered_with_sec",
+                                false
+                              )
                             }
                             checkedColor={"#333"}
                           />
@@ -205,8 +261,8 @@ export default function ({ navigation }) {
                             <TextInput
                               placeholder="Enter your Firm Legal Name"
                               value={firm?.firm_name}
-                              onValueChange={(val) =>
-                                handleInputChange("firm_name", val)
+                              onChangeText={(val) =>
+                                handleInputChange("firm", "firm_name", val)
                               }
                               style={{
                                 color: "#acbac7",
@@ -224,8 +280,12 @@ export default function ({ navigation }) {
                             <TextInput
                               placeholder="Enter your Firm CRD Number"
                               value={firm.firm_crd_number}
-                              onValueChange={(val) =>
-                                handleInputChange("firm_crd_number", val)
+                              onChangeText={(val) =>
+                                handleInputChange(
+                                  "firm",
+                                  "firm_crd_number",
+                                  val
+                                )
                               }
                               style={{
                                 color: "#acbac7",
@@ -243,8 +303,8 @@ export default function ({ navigation }) {
                             <Picker
                               items={STATES}
                               value={firm.firm_state}
-                              onValueChange={(val) =>
-                                handleInputChange("firm_state", val)
+                              onChangeText={(val) =>
+                                handleInputChange("firm", "firm_state", val)
                               }
                               placeholder="Choose your state of business"
                             />
@@ -272,7 +332,7 @@ export default function ({ navigation }) {
                             style={{ marginRight: 10 }}
                             value={user?.is_individual}
                             onValueChange={() =>
-                              handleInputChange("is_individual", true)
+                              handleInputChange("user", "is_individual", true)
                             }
                             checkedColor={"#333"}
                           />
@@ -283,7 +343,7 @@ export default function ({ navigation }) {
                             style={{ marginLeft: 20, marginRight: 10 }}
                             value={!user?.is_individual}
                             onValueChange={() =>
-                              handleInputChange("is_individual", false)
+                              handleInputChange("user", "is_individual", false)
                             }
                             checkedColor={"#333"}
                           />
@@ -305,8 +365,8 @@ export default function ({ navigation }) {
                             <TextInput
                               placeholder="Enter your Finra Number"
                               value={user?.finra_number}
-                              onValueChange={(val) =>
-                                handleInputChange("finra_number", val)
+                              onChangeText={(val) =>
+                                handleInputChange("user", "finra_number", val)
                               }
                               style={{
                                 color: "#acbac7",
@@ -324,8 +384,8 @@ export default function ({ navigation }) {
                             <TextInput
                               placeholder="Enter your Phone Number"
                               value={user?.phone_number}
-                              onValueChange={(val) =>
-                                handleInputChange("phone_number", val)
+                              onChangeText={(val) =>
+                                handleInputChange("user", "phone_number", val)
                               }
                               style={{
                                 color: "#acbac7",
@@ -357,7 +417,11 @@ export default function ({ navigation }) {
                           style={{ marginRight: 10 }}
                           value={user?.firm_manages_assets}
                           onValueChange={() =>
-                            handleInputChange("firm_manages_assets", true)
+                            handleInputChange(
+                              "user",
+                              "firm_manages_assets",
+                              true
+                            )
                           }
                           checkedColor={"#333"}
                         />
@@ -368,7 +432,11 @@ export default function ({ navigation }) {
                           style={{ marginLeft: 20, marginRight: 10 }}
                           value={!user?.firm_manages_assets}
                           onValueChange={() =>
-                            handleInputChange("firm_manages_assets", false)
+                            handleInputChange(
+                              "user",
+                              "firm_manages_assets",
+                              false
+                            )
                           }
                           checkedColor={"#333"}
                         />
@@ -389,12 +457,12 @@ export default function ({ navigation }) {
                         text="Save changes"
                         style={{ backgroundColor: "#3b9c6e" }}
                         color="#3dc286"
-                        onPress={() => console.log("Button tapped")}
+                        onPress={() => handleSubmitForm()}
                       />
                       <Button
                         text="Cancel"
                         status="danger"
-                        onPress={() => console.log("Button tapped")}
+                        onPress={() => navigation.navigate("Home")}
                       />
                     </View>
                   </View>

@@ -11,7 +11,7 @@ export const getFirmData = async (firmId) => {
     let { data: firm, error } = await supabase
       .from("firm")
       .select("*")
-      .eq("id", firmId);
+      .eq("firm_id", firmId);
 
     if (error) {
       console.error("Error fetching firm profile:", error);
