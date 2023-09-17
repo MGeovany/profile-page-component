@@ -9,7 +9,6 @@
 #### Backend Services
 
 - [Supabase](https://supabase.com/) – Supabase is an open source Firebase alternative.
-- [Node JS](https://nodejs.org/es) – Node.js® is an open-source, cross-platform JavaScript runtime environment.
 
 #### UI
 
